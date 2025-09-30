@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'core',
+    'usuarios',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import os
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Indicar que usamos usuário customizado
+AUTH_USER_MODEL = "usuarios.CustomUser"
+
+# Redirecionamentos de login/logout
+LOGIN_REDIRECT_URL = "/"       # Para onde o usuário vai depois de logar
+LOGOUT_REDIRECT_URL = "/usuarios/login/"
+LOGIN_URL = "login"

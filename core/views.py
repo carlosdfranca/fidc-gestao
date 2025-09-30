@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
+
 import markdown
 import os
 
@@ -13,27 +14,27 @@ def home(request):
             text = f.read()
             release_html = markdown.markdown(text)
 
-    return render(request, "core/home.html", {
+    return render(request, "home.html", {
         "release_notes": release_html
     })
 
 def limites(request):
-    return render(request, "core/limites.html")
+    return render(request, "limites.html")
 
 def lastro(request):
-    return render(request, "core/lastro.html")
+    return render(request, "lastro.html")
 
 def risco(request):
-    return render(request, "core/risco.html")
+    return render(request, "risco.html")
 
 def relatorios(request):
-    return render(request, "core/relatorios.html")
+    return render(request, "relatorios.html")
 
 def conformidade(request):
-    return render(request, "core/conformidade.html")
+    return render(request, "conformidade.html")
 
 def integracoes(request):
-    return render(request, "core/integracoes.html")
+    return render(request, "integracoes.html")
 
 def workflow_cessao(request):
-    return render(request, "core/workflow_cessao.html")
+    return render(request, "workflow_cessao.html")
