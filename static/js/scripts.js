@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data: [43.9, 43.9, 44.1, 44.3, 44.7, 44.2]
         }],
         xaxis: {
-            categories: ['Dez/16','Jan/17','Fev/17','Mar/17','Abr/17','Mai/17'],
+            categories: ['Dez/24','Jan/25','Fev/25','Mar/25','Abr/25','Mai/25'],
             labels: { style: { fontSize: '11px' } }
         },
         yaxis: {
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data: [600, 200, 150, 300, 450, 350]
         }],
         xaxis: {
-            categories: ['Dez/16','Jan/17','Fev/17','Mar/17','Abr/17','Mai/17'],
+            categories: ['Dez/24','Jan/25','Fev/25','Mar/25','Abr/25','Mai/25'],
             labels: { style: { fontSize: '11px' } }
         },
         yaxis: {

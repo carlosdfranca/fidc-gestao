@@ -160,3 +160,7 @@ body {
 .badge-csv {
     background-color: #4b883b !important;
 }
+
+.text-muted {
+    color: #ffffff !important;
+}
