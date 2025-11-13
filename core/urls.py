@@ -10,4 +10,6 @@ urlpatterns = [
     path('conformidade/', views.conformidade, name='conformidade'),
     path('integracoes/', views.integracoes, name='integracoes'),
     path('workflow-cessao/', views.workflow_cessao, name='workflow_cessao'),
+
+    path("trocar-empresa/", views.trocar_empresa, name="trocar_empresa"),
 ]

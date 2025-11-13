@@ -20,9 +20,19 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="{% url 'home' %}">FIDC Gestão</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            {% if user.is_authenticated %}
+    
+                {# SUPERUSER sempre vê o dropdown #}
+                {% if user.is_superuser %}
+                    {% include "partials/dropdown_empresas.html" %}
+                
+                {# Usuário comum só vê se tiver mais de uma empresa #}
+                {% elif empresas_qtd > 1 %}
+                    {% include "partials/dropdown_empresas.html" %}
+                {% endif %}
+
+            {% endif %}
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a></li>

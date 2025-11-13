@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "core.middleware.EmpresaAtivaMiddleware",
 ]
 
 ROOT_URLCONF = 'fidc_gestao.urls'
@@ -60,6 +61,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "core.context_processors.empresas_context",
+                'core.context_processors.empresas_disponiveis'
             ],
         },
     },
