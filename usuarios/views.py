@@ -35,19 +35,12 @@ def login_view(request):
 
         user = authenticate(request, username=username, password=password)
         if user:
-            # Gerar código OTP
-            otp = str(random.randint(100000, 999999))
-            cache.set(f"otp_{user.id}", otp, timeout=300)  # expira em 5 min
-
-            # Simula envio do OTP (aqui só printa no terminal)
-            print(f"[OTP] Código para {user.username}: {otp}")
-
-            # Armazena ID do user na sessão para validar depois
-            request.session["otp_user_id"] = user.id
-
-            return redirect("otp")
+            login(request, user)
+            messages.success(request, "Login realizado com sucesso!")
+            return redirect("home")
         else:
             messages.error(request, "Usuário ou senha inválidos.")
+    
     return render(request, "registration/login.html")
 
 def otp_view(request):
