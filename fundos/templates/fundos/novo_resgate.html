@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Novo Resgate</h2>
+    
+    <div class="card my-4">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label">Fundo</label>
+                    <select name="fundo" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        {% for fundo in fundos %}
+                        <option value="{{ fundo.id }}">{{ fundo.razao_social }} ({{ fundo.cnpj }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Cotista</label>
+                    <select name="cotista" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        {% for cotista in cotistas %}
+                        <option value="{{ cotista.id }}">{{ cotista.nome_razao_social }} ({{ cotista.cpf_cnpj }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Quantidade de Cotas</label>
+                    <input type="number" name="quantidade" class="form-control" step="0.000001" min="0.000001" required>
+                    <small class="text-muted">Exemplo: 1000.500000</small>
+                </div>
+                
+                <button type="submit" class="btn btn-danger">Solicitar Resgate</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Voltar</a>
+            </form>
+        </div>
+    </div>
+    
+    <h4>Últimos Resgates</h4>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Data Solicitação</th>
+                <th>Fundo</th>
+                <th>Cotista</th>
+                <th>Qtd Cotas</th>
+                <th>Data Cotização</th>
+                <th>Valor Bruto</th>
+                <th>IR</th>
+                <th>Valor Líquido</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mov in ultimos_resgates %}
+            <tr>
+                <td>{{ mov.data_solicitacao|date:"d/m/Y H:i" }}</td>
+                <td>{{ mov.fundo.razao_social }}</td>
+                <td>{{ mov.cotista.nome_razao_social }}</td>
+                <td>{{ mov.quantidade_cotas|floatformat:6 }}</td>
+                <td>{{ mov.data_cotizacao|date:"d/m/Y" }}</td>
+                <td>R$ {{ mov.valor_financeiro|default:"--"|floatformat:2 }}</td>
+                <td>R$ {{ mov.ir_retido|floatformat:2 }}</td>
+                <td>R$ {{ mov.valor_liquido|default:"--"|floatformat:2 }}</td>
+                <td>
+                    <span class="badge 
+                        {% if mov.status == 'CONFIRMADO' %}bg-success
+                        {% elif mov.status == 'SOLICITADO' %}bg-warning
+                        {% else %}bg-secondary{% endif %}">
+                        {{ mov.get_status_display }}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9" class="text-center">Nenhum resgate cadastrado</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

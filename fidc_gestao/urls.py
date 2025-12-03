@@ -7,7 +7,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),  # login/logout do Django
     path("usuarios/", include("usuarios.urls")),             # perfil e futuros endpoints
-    path("", include("core.urls")),    
+    path("", include("core.urls")),                          # base da plataforma   
+    path('fundos/', include('fundos.urls')),                 # Fundos
 ]
 
 if settings.DEBUG:
