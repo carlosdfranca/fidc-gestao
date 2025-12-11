@@ -163,3 +163,38 @@ AUTH_USER_MODEL = "usuarios.CustomUser"
 LOGIN_REDIRECT_URL = "/"       # Para onde o usuário vai depois de logar
 LOGOUT_REDIRECT_URL = "/usuarios/login/"
 LOGIN_URL = "login"
+
+
+# ==============================
+# CELERY CONFIGURATION
+# ==============================
+
+# URL do Redis (localhost em desenvolvimento)
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+
+# Timezone
+CELERY_TIMEZONE = 'America/Sao_Paulo'
+CELERY_ENABLE_UTC = False
+
+# Serialização (JSON é mais seguro)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+# Resultados expiram após 24h (limpa memória)
+CELERY_RESULT_EXPIRES = 86400  # 24 horas em segundos
+
+# Configurações de tarefas
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutos
+CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutos
+
+# Retry automático em caso de falha do broker
+CELERY_BROKER_CONNECTION_RETRY = True
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
+
+# Logs
+CELERY_WORKER_LOG_FORMAT = '[%(asctime)s: %(levelname)s/%(processName)s] %(message)s'
+CELERY_WORKER_TASK_LOG_FORMAT = '[%(asctime)s: %(levelname)s/%(processName)s][%(task_name)s(%(task_id)s)] %(message)s'
