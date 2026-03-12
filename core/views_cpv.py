@@ -11,13 +11,14 @@ from core.forms_cpv import (
 )
 
 from core.services.cpv_xml import parse_nfe_uploaded_file
-from core.services.cpv_doc import render_termo_cessao_docx
+from core.services.cpv_doc import render_termo_cessao_docx, render_termo_confirmacao_docx
 
 from fundos.models import Recebiveis, Fundo
 
 
 TEMPLATE_HTML = "workflow_cessao_cpv.html"
 TEMPLATE_DOCX = str(settings.BASE_DIR / "doc_templates" / "termo_cessao.docx")
+TEMPLATE_CONFIRMACAO_DOCX = str(settings.BASE_DIR / "doc_templates" / "termo_confirmacao.docx")
 
 
 @login_required
@@ -103,7 +104,7 @@ def workflow_cessao_view(request):
 
             titulos_validos = []
             for f in titulos_formset:
-                if f.cleaned_data and not f.cleaned_data.get("excluir"):
+                if f.cleaned_data:
                     titulos_validos.append(f.cleaned_data)
 
             if not titulos_validos:
@@ -163,6 +164,73 @@ def workflow_cessao_view(request):
                 doc_bytes,
                 content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 headers={"Content-Disposition": 'attachment; filename="termo_cessao.docx"'}
+            )
+
+        # =====================================================
+        # GERAR TERMO DE CONFIRMAÇÃO — mesma lógica
+        # =====================================================
+
+        elif acao == "gerar_confirmacao":
+
+            cessao_form = CpvCessaoForm(request.POST)
+            titulos_formset = TituloCessaoFormSet(request.POST)
+
+            if not (cessao_form.is_valid() and titulos_formset.is_valid()):
+                messages.error(request, "Corrija os campos.")
+                return render(request, TEMPLATE_HTML, {
+                    "cessao_form": cessao_form,
+                    "titulos_formset": titulos_formset,
+                })
+
+            fundo = Fundo.objects.first()  # depois ligamos no form se quiser
+
+            titulos_validos = []
+            for f in titulos_formset:
+                if f.cleaned_data:
+                    titulos_validos.append(f.cleaned_data)
+
+            if not titulos_validos:
+                messages.error(request, "Nenhum título válido.")
+                return render(request, TEMPLATE_HTML, {
+                    "cessao_form": cessao_form,
+                    "titulos_formset": titulos_formset, 
+                })
+
+            # ---------- NÃO salva recebíveis (só gera doc) ----------
+
+            # ---------- doc ----------
+            class T:
+                def __init__(self, d):
+                    self.numero_titulo = d["numero"]
+                    self.sacado_nome = d["sacado_nome"]
+                    self.sacado_doc = d["sacado_doc"]
+                    self.valor = d["valor"]
+                    self.vencimento_iso = d["vencimento"].isoformat()
+                    self.tipo_credito = d["tipo"]
+
+            titulos_doc = [T(t) for t in titulos_validos]
+
+            partes = type("P", (), {})()
+            # Usar dados do cedente do formulário se disponível, senão usar fundo
+            cedente_nome_form = cessao_form.cleaned_data.get('emitente_razao_social')
+            cedente_cnpj_form = cessao_form.cleaned_data.get('emitente_cnpj')
+            
+            partes.cedente_nome = cedente_nome_form or fundo.nome or "CEDENTE"
+            partes.cedente_doc = _digits(cedente_cnpj_form) if cedente_cnpj_form else getattr(fundo, 'cnpj', "00000000000000")
+            partes.sacado_nome = titulos_doc[0].sacado_nome
+            partes.sacado_doc = titulos_doc[0].sacado_doc
+
+            doc_bytes = render_termo_confirmacao_docx(
+                TEMPLATE_CONFIRMACAO_DOCX,
+                partes=partes,
+                titulos=titulos_doc,
+                dados_operacao=cessao_form.cleaned_data
+            )
+
+            return HttpResponse(
+                doc_bytes,
+                content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                headers={"Content-Disposition": 'attachment; filename="termo_confirmacao.docx"'}
             )
 
     return render(request, TEMPLATE_HTML, {

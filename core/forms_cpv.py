@@ -128,14 +128,6 @@ class TituloCessaoForm(forms.Form):
         widget=forms.TextInput(attrs={"class": "form-control"})
     )
 
-    excluir = forms.BooleanField(
-        required=False,
-        widget=forms.CheckboxInput(attrs={
-            "class": "form-check-input",
-            "style": "transform: scale(1.3);"
-        })
-    )
-
 # =====================================================
 # FORMSET — MÚLTIPLOS TÍTULOS
 # =====================================================
@@ -343,4 +335,59 @@ class CpvCessaoForm(forms.Form):
             "class": "form-control",
             "placeholder": "XXX.XXX.XXX-XX"
         })
+    )
+
+    # =========================================
+    # SACADO
+    # =========================================
+    
+    sacado_razao_social = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    
+    sacado_cnpj = forms.CharField(
+        max_length=18,  # Com formatação XX.XXX.XXX/XXXX-XX
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "XX.XXX.XXX/XXXX-XX"
+        })
+    )
+    
+    sacado_representante = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    
+    sacado_cpf = forms.CharField(
+        max_length=14,  # Com formatação XXX.XXX.XXX-XX
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "XXX.XXX.XXX-XX"
+        })
+    )
+    
+    sacado_email = forms.EmailField(
+        max_length=200,
+        required=False,
+        widget=forms.EmailInput(attrs={
+            "class": "form-control",
+            "placeholder": "exemplo@email.com"
+        })
+    )
+    
+    sacado_cargo = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    
+    sacado_endereco = forms.CharField(
+        max_length=300,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
     )
