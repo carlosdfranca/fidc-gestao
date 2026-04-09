@@ -1321,3 +1321,154 @@ input[type=number] {
     margin-left: auto;
     margin-right: auto;
 }
+
+/* ================================
+   Funds Tab Navigation
+================================ */
+.funds-tab-nav {
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.75rem;
+    gap: 0;
+    flex-wrap: wrap;
+}
+.funds-tab-nav .nav-link {
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: -1px;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.funds-tab-nav .nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.04);
+}
+.funds-tab-nav .nav-link.active {
+    color: var(--text-primary);
+    background: transparent;
+    font-weight: 600;
+}
+.funds-tab-nav .nav-link.funds-tab--todos.active {
+    border-bottom-color: #8892a0;
+    color: #e8ecf2;
+}
+.funds-tab-nav .nav-link.funds-tab--fidc.active {
+    border-bottom-color: #3b82f6;
+    color: #60a5fa;
+}
+.funds-tab-nav .nav-link.funds-tab--fii.active  {
+    border-bottom-color: #f59e0b;
+    color: #fbbf24;
+}
+.funds-tab-nav .nav-link.funds-tab--fip.active  {
+    border-bottom-color: #10b981;
+    color: #34d399;
+}
+
+/* Tab count badges */
+.tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 99px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+}
+.tab-badge--todos { background: rgba(136,146,160,0.18); color: #8892a0; }
+.tab-badge--fidc  { background: rgba(59,130,246,0.18);  color: #60a5fa; }
+.tab-badge--fii   { background: rgba(245,158,11,0.18);  color: #fbbf24; }
+.tab-badge--fip   { background: rgba(16,185,129,0.18);  color: #34d399; }
+
+/* Empty state variants per type */
+.empty-state-modern--fidc .empty-state-modern__icon-wrap {
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.04));
+    border-color: rgba(59,130,246,0.2);
+    color: #60a5fa;
+}
+.empty-state-modern--fii .empty-state-modern__icon-wrap {
+    background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.04));
+    border-color: rgba(245,158,11,0.2);
+    color: #fbbf24;
+}
+.empty-state-modern--fip .empty-state-modern__icon-wrap {
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.04));
+    border-color: rgba(16,185,129,0.2);
+    color: #34d399;
+}
+
+/* ================================
+   Funds Search Input
+================================ */
+.funds-search-wrap {
+    position: relative;
+    margin-bottom: 1.25rem;
+    max-width: 420px;
+}
+.funds-search-icon {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    pointer-events: none;
+    opacity: 0.6;
+}
+.funds-search-input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.6rem 1rem 0.6rem 2.25rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    outline: none;
+}
+.funds-search-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+.funds-search-input:focus {
+    border-color: rgba(59,130,246,0.5);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+.funds-search-input--fidc:focus {
+    border-color: rgba(59,130,246,0.5);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+.funds-search-input--fii:focus {
+    border-color: rgba(245,158,11,0.5);
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.1);
+}
+.funds-search-input--fip:focus {
+    border-color: rgba(16,185,129,0.5);
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+}
+.funds-no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    animation: fadeInUp 0.25s ease both;
+}
+.funds-no-results i {
+    font-size: 2rem;
+    color: var(--text-secondary);
+    opacity: 0.35;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+.funds-no-results p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+}

@@ -148,11 +148,21 @@ def listar_fundos(request):
     else:
         fundos = Fundo.objects.none()
 
+    fundos_fidc = fundos.filter(tipo_fundo='FIDC')
+    fundos_fii  = fundos.filter(tipo_fundo='FII')
+    fundos_fip  = fundos.filter(tipo_fundo='FIP')
+
     context = {
         'fundos': fundos,
+        'fundos_fidc': fundos_fidc,
+        'fundos_fii': fundos_fii,
+        'fundos_fip': fundos_fip,
         'total_fundos': fundos.count(),
         'total_ativos': fundos.filter(ativo=True).count(),
         'total_inativos': fundos.filter(ativo=False).count(),
+        'total_fidc': fundos_fidc.count(),
+        'total_fii': fundos_fii.count(),
+        'total_fip': fundos_fip.count(),
     }
     return render(request, 'fundos/listar_fundos.html', context)
 
