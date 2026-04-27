@@ -25,61 +25,180 @@
 </div>
 
 <div class="container my-4">
-    <!-- Fund Cards -->
+
     {% if fundos %}
-        <div class="fundo-grid">
-            {% for fundo in fundos %}
-            <div class="fundo-card fundo-card--{{ fundo.tipo_fundo|lower }}">
-                <div class="fundo-card__topbar"></div>
-                <div class="fundo-card__header">
-                    <div class="d-flex gap-2 flex-wrap">
-                        {% if fundo.tipo_fundo == 'FIDC' %}
-                            <span class="badge-tipo-fidc">{{ fundo.get_tipo_fundo_display }}</span>
-                        {% elif fundo.tipo_fundo == 'FII' %}
-                            <span class="badge-tipo-fii">{{ fundo.get_tipo_fundo_display }}</span>
-                        {% else %}
-                            <span class="badge-tipo-fip">{{ fundo.get_tipo_fundo_display }}</span>
-                        {% endif %}
-                    </div>
-                    {% if fundo.ativo %}
-                        <span class="badge-ativo">Ativo</span>
-                    {% else %}
-                        <span class="badge-inativo">Inativo</span>
-                    {% endif %}
+
+        <!-- KPI Bar -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 2rem;">
+            <div class="kpi-card kpi-card--blue">
+                <div class="kpi-card__value">{{ total_fundos }}</div>
+                <div class="kpi-card__label"><i class="bi bi-bank me-1"></i>Total de Fundos</div>
+            </div>
+            <div class="kpi-card kpi-card--green">
+                <div class="kpi-card__value">{{ total_ativos }}</div>
+                <div class="kpi-card__label"><i class="bi bi-check-circle me-1"></i>Ativos</div>
+            </div>
+            <div class="kpi-card kpi-card--gray">
+                <div class="kpi-card__value">{{ total_inativos }}</div>
+                <div class="kpi-card__label"><i class="bi bi-pause-circle me-1"></i>Inativos</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav funds-tab-nav" id="fundosTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link funds-tab--todos active" id="tab-todos-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-todos" type="button"
+                    role="tab" aria-controls="tab-todos" aria-selected="true">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    Todos
+                    <span class="tab-badge tab-badge--todos">{{ total_fundos }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link funds-tab--fidc" id="tab-fidc-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-fidc" type="button"
+                    role="tab" aria-controls="tab-fidc" aria-selected="false">
+                    <i class="bi bi-credit-card-2-front"></i>
+                    FIDC
+                    <span class="tab-badge tab-badge--fidc">{{ total_fidc }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link funds-tab--fii" id="tab-fii-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-fii" type="button"
+                    role="tab" aria-controls="tab-fii" aria-selected="false">
+                    <i class="bi bi-building"></i>
+                    FII
+                    <span class="tab-badge tab-badge--fii">{{ total_fii }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link funds-tab--fip" id="tab-fip-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-fip" type="button"
+                    role="tab" aria-controls="tab-fip" aria-selected="false">
+                    <i class="bi bi-briefcase"></i>
+                    FIP
+                    <span class="tab-badge tab-badge--fip">{{ total_fip }}</span>
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="fundosTabContent">
+
+            <!-- Todos -->
+            <div class="tab-pane fade show active" id="tab-todos" role="tabpanel" aria-labelledby="tab-todos-btn">
+                <div class="funds-search-wrap">
+                    <i class="bi bi-search funds-search-icon"></i>
+                    <input type="text" class="funds-search-input" data-grid="grid-todos"
+                           placeholder="Buscar por nome comercial ou razão social…" autocomplete="off">
                 </div>
-
-                <div class="fundo-card__body">
-                    <p class="fundo-card__name">{{ fundo.razao_social }}</p>
-                    {% if fundo.nome_comercial %}
-                        <p class="fundo-card__alias">{{ fundo.nome_comercial }}</p>
-                    {% endif %}
-
-                    <ul class="fundo-card__meta">
-                        <li><i class="bi bi-upc-scan"></i><strong>CNPJ</strong>&nbsp;{{ fundo.cnpj }}</li>
-                        {% if fundo.codigo_anbima %}
-                        <li><i class="bi bi-tag"></i><strong>ANBIMA</strong>&nbsp;{{ fundo.codigo_anbima }}</li>
-                        {% endif %}
-                        <li><i class="bi bi-calendar3"></i><strong>Constituição</strong>&nbsp;{{ fundo.data_constituicao|date:"d/m/Y" }}</li>
-                        {% if fundo.taxa_administracao %}
-                        <li><i class="bi bi-percent"></i><strong>Taxa Adm.</strong>&nbsp;{{ fundo.taxa_administracao }}% a.a.</li>
-                        {% endif %}
-                        {% if fundo.taxa_gestao %}
-                        <li><i class="bi bi-graph-up"></i><strong>Taxa Gestão</strong>&nbsp;{{ fundo.taxa_gestao }}% a.a.</li>
-                        {% endif %}
-                    </ul>
+                <div class="fundo-grid" id="grid-todos">
+                    {% for fundo in fundos %}
+                    {% include "fundos/_fundo_card.html" %}
+                    {% endfor %}
                 </div>
-
-                <div class="fundo-card__footer">
-                    <a href="{% url 'fundos:editar_fundo' fundo_id=fundo.id %}" class="btn btn-ghost-ds">
-                        <i class="bi bi-pencil me-1"></i>Editar
-                    </a>
-                    <a href="{% url 'fundos:calcular_cota_manual' fundo_id=fundo.id %}" class="btn btn-primary-ds">
-                        <i class="bi bi-calculator me-1"></i>Calcular Cota
-                    </a>
+                <div class="funds-no-results" style="display:none;">
+                    <i class="bi bi-search"></i>
+                    <p>Nenhum fundo encontrado para &ldquo;<span class="funds-no-results__query"></span>&rdquo;</p>
                 </div>
             </div>
-            {% endfor %}
-        </div>
+
+            <!-- FIDC -->
+            <div class="tab-pane fade" id="tab-fidc" role="tabpanel" aria-labelledby="tab-fidc-btn">
+                {% if fundos_fidc %}
+                <div class="funds-search-wrap">
+                    <i class="bi bi-search funds-search-icon"></i>
+                    <input type="text" class="funds-search-input funds-search-input--fidc" data-grid="grid-fidc"
+                           placeholder="Buscar FIDC por nome ou razão social…" autocomplete="off">
+                </div>
+                <div class="fundo-grid" id="grid-fidc">
+                    {% for fundo in fundos_fidc %}
+                    {% include "fundos/_fundo_card.html" %}
+                    {% endfor %}
+                </div>
+                <div class="funds-no-results" style="display:none;">
+                    <i class="bi bi-search"></i>
+                    <p>Nenhum FIDC encontrado para &ldquo;<span class="funds-no-results__query"></span>&rdquo;</p>
+                </div>
+                {% else %}
+                <div class="empty-state-modern empty-state-modern--fidc">
+                    <div class="empty-state-modern__icon-wrap">
+                        <i class="bi bi-credit-card-2-front"></i>
+                    </div>
+                    <p class="empty-state-modern__title">Nenhum FIDC cadastrado</p>
+                    <p class="empty-state-modern__text">Adicione um Fundo de Investimento em Direitos Creditórios para esta empresa.</p>
+                    <a href="{% url 'fundos:novo_fundo' %}" class="btn btn-primary-ds" style="padding:0.6rem 1.5rem;">
+                        <i class="bi bi-plus-lg me-1"></i>Novo Fundo
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- FII -->
+            <div class="tab-pane fade" id="tab-fii" role="tabpanel" aria-labelledby="tab-fii-btn">
+                {% if fundos_fii %}
+                <div class="funds-search-wrap">
+                    <i class="bi bi-search funds-search-icon"></i>
+                    <input type="text" class="funds-search-input funds-search-input--fii" data-grid="grid-fii"
+                           placeholder="Buscar FII por nome ou razão social…" autocomplete="off">
+                </div>
+                <div class="fundo-grid" id="grid-fii">
+                    {% for fundo in fundos_fii %}
+                    {% include "fundos/_fundo_card.html" %}
+                    {% endfor %}
+                </div>
+                <div class="funds-no-results" style="display:none;">
+                    <i class="bi bi-search"></i>
+                    <p>Nenhum FII encontrado para &ldquo;<span class="funds-no-results__query"></span>&rdquo;</p>
+                </div>
+                {% else %}
+                <div class="empty-state-modern empty-state-modern--fii">
+                    <div class="empty-state-modern__icon-wrap">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <p class="empty-state-modern__title">Nenhum FII cadastrado</p>
+                    <p class="empty-state-modern__text">Adicione um Fundo de Investimento Imobiliário para esta empresa.</p>
+                    <a href="{% url 'fundos:novo_fundo' %}" class="btn btn-primary-ds" style="padding:0.6rem 1.5rem;">
+                        <i class="bi bi-plus-lg me-1"></i>Novo Fundo
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- FIP -->
+            <div class="tab-pane fade" id="tab-fip" role="tabpanel" aria-labelledby="tab-fip-btn">
+                {% if fundos_fip %}
+                <div class="funds-search-wrap">
+                    <i class="bi bi-search funds-search-icon"></i>
+                    <input type="text" class="funds-search-input funds-search-input--fip" data-grid="grid-fip"
+                           placeholder="Buscar FIP por nome ou razão social…" autocomplete="off">
+                </div>
+                <div class="fundo-grid" id="grid-fip">
+                    {% for fundo in fundos_fip %}
+                    {% include "fundos/_fundo_card.html" %}
+                    {% endfor %}
+                </div>
+                <div class="funds-no-results" style="display:none;">
+                    <i class="bi bi-search"></i>
+                    <p>Nenhum FIP encontrado para &ldquo;<span class="funds-no-results__query"></span>&rdquo;</p>
+                </div>
+                {% else %}
+                <div class="empty-state-modern empty-state-modern--fip">
+                    <div class="empty-state-modern__icon-wrap">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <p class="empty-state-modern__title">Nenhum FIP cadastrado</p>
+                    <p class="empty-state-modern__text">Adicione um Fundo de Investimento em Participações para esta empresa.</p>
+                    <a href="{% url 'fundos:novo_fundo' %}" class="btn btn-primary-ds" style="padding:0.6rem 1.5rem;">
+                        <i class="bi bi-plus-lg me-1"></i>Novo Fundo
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div><!-- /tab-content -->
 
     {% else %}
         <div class="empty-state-modern">
@@ -96,4 +215,58 @@
 
 </div>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    'use strict';
+
+    function filterFunds(input) {
+        var query = input.value.trim().toLowerCase();
+        var grid = document.getElementById(input.dataset.grid);
+        if (!grid) return;
+
+        var cards = grid.querySelectorAll('.fundo-card');
+        var noResults = grid.nextElementSibling; // .funds-no-results
+        var visible = 0;
+
+        cards.forEach(function (card) {
+            var text = (card.dataset.search || '').toLowerCase();
+            var match = !query || text.indexOf(query) !== -1;
+            card.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+
+        if (noResults && noResults.classList.contains('funds-no-results')) {
+            if (visible === 0 && query) {
+                var qs = noResults.querySelector('.funds-no-results__query');
+                if (qs) qs.textContent = input.value.trim();
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+    }
+
+    // Attach input listeners
+    document.querySelectorAll('.funds-search-input').forEach(function (input) {
+        input.addEventListener('input', function () { filterFunds(input); });
+    });
+
+    // Clear search when switching tabs
+    document.querySelectorAll('#fundosTabs button[data-bs-toggle="tab"]').forEach(function (btn) {
+        btn.addEventListener('shown.bs.tab', function (e) {
+            var targetId = e.target.dataset.bsTarget; // e.g. "#tab-fidc"
+            var pane = document.querySelector(targetId);
+            if (!pane) return;
+            var input = pane.querySelector('.funds-search-input');
+            if (!input) return;
+            input.value = '';
+            filterFunds(input);
+        });
+    });
+}());
+</script>
+{% endblock %}
+
 
