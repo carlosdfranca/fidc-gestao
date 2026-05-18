@@ -29,8 +29,8 @@ def limites(request):
     return render(request, "limites.html")
 
 @login_required
-def lastro(request):
-    return render(request, "lastro.html")
+def operacoes(request):
+    return render(request, "operacoes.html")
 
 @login_required
 def risco(request):
